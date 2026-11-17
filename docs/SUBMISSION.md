@@ -17,16 +17,15 @@ below covers (video, written entry, deadline format, team details).
       require a public repo. The commit was scanned for credentials and
       personal data before pushing and came back clean, so opening it up is
       safe, but check what they actually ask for.
-- [ ] **Get a domain name.** The page is HTTPS, so the socket must be `wss://`,
-      which needs a certificate, which is never issued for a bare IP. Without
-      a hostname there is no deployment. This is the long-lead item if you
-      don't already own one.
+- [x] ~~**Get a domain name.**~~ Done — `hothandz.nineart.studio`.
 - [ ] **Create the Azure account and the B1s VM** — `docs/DEPLOY.md`.
-- [ ] **Deploy the room server** and confirm `curl https://rooms.yourdomain.com`
-      returns the health line over https.
-- [ ] **Build the front end with the socket URL baked in** and deploy `dist/`.
-      `VITE_HCA_SERVER_URL` is read at build time; setting it afterwards does
-      nothing.
+- [ ] **Point `hothandz.nineart.studio` at the VM** with an `A` record, and set
+      the VM's public IP to Static first. Azure's default IP is dynamic, and
+      when it changes the DNS and the certificate both break.
+- [ ] **Deploy the game and the room server to that one host.** Both are served
+      from the same origin, which means `npm run build` needs no environment
+      variable — the client falls back to `wss://<its own host>/hca-ws`. Confirm
+      `https://hothandz.nineart.studio` loads and a solo match counts down.
 - [ ] **Play it on a real Quest.** This has never been done. Every check so far
       has been the flat desktop view or the IWER emulator — which cannot prove
       hand tracking, gesture recognition, passthrough, table calibration,

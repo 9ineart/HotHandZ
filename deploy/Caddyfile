@@ -1,21 +1,31 @@
-# Caddy in front of the HotHandZ room server.
+# Caddy serves the whole of HotHandZ from one hostname.
 #
-# This exists for one reason: the game is served over HTTPS, and a secure page
-# is not allowed to open an insecure WebSocket. The client therefore has to
-# reach the server at wss://, which needs a real certificate on a real
-# hostname -- you cannot get one for a bare IP address. Caddy obtains and
-# renews that certificate on its own, which is the whole job.
+# The game and the room server share an origin on purpose. NetClient falls back
+# to wss://<the page's own host>/hca-ws when VITE_HCA_SERVER_URL is unset, so
+# serving both from here means the socket URL never has to be baked into the
+# build -- which removes the one deployment step that fails silently if you
+# get it wrong. A secure page cannot open an insecure socket either, and Caddy
+# obtains and renews the certificate that makes wss:// possible.
 #
 # Replace the hostname, then:
 #   sudo caddy fmt --overwrite /etc/caddy/Caddyfile
 #   sudo systemctl reload caddy
-#
-# Caddy upgrades WebSocket connections through reverse_proxy without any extra
-# configuration, so the socket path needs no special case here. rooms.mjs
-# ignores every path except /hca-ws and answers anything else with a one-line
-# health message, which doubles as a way to check the box is alive from a
-# browser.
 
-rooms.example.com {
-	reverse_proxy 127.0.0.1:8787
+hothandz.nineart.studio {
+	# Worth having: the build is ~13 MB and a headset pulls it over Wi-Fi.
+	encode zstd gzip
+
+	# The socket. Caddy upgrades WebSocket connections through reverse_proxy
+	# with no extra configuration, and rooms.mjs listens only on localhost, so
+	# this is the only route to it.
+	handle /hca-ws* {
+		reverse_proxy 127.0.0.1:8787
+	}
+
+	# Everything else is the built game.
+	handle {
+		root * /srv/hothandz/dist
+		try_files {path} /index.html
+		file_server
+	}
 }
