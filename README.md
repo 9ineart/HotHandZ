@@ -1,45 +1,55 @@
-# IWSDK App
+# HotHandZ
 
-This project uses `iwsdk.config.json` for declarative scene, asset, component,
-XR, and emulator configuration. Application systems remain explicit in
-`src/index.ts`.
+Rock, Paper, Scissors as a tabletop game for VR.
+
+A Meta Quest mixed-reality game built with [IWSDK](https://developers.meta.com/vr/documentation/iwsdk/),
+Vite and TypeScript. You place an arena on your real table through passthrough,
+and throw rock, paper or scissors with your bare hands — no controllers. The
+gesture you hold is read from your hand joints, locks in on a five-count, and
+your fighter acts it out against the rival's.
+
+## Running it locally
 
 ```sh
 npm install
 npm run dev
 ```
 
-Use the Runtime and Editor controls in the managed browser to switch between
-the running experience and its authored scene.
+That starts the Vite dev server, the room server and a managed browser
+together. On the flat desktop view, keys `1`, `2` and `3` stand in for rock,
+paper and scissors — hold one for about half a second to lock it.
 
-## Starter content
+To put it on a headset on the same network, take the network URL from
+`npx @iwsdk/cli dev status` and accept the local certificate warning.
 
-The robot and welcome panel are small examples of authored scene content plus
-runtime systems. The robot turns toward the player's head and plays a sound
-when pressed. To remove the robot, delete its scene node, its `RobotSystem`
-registration from `src/index.ts` or `src/index.js`, and its `Robot` registration
-from `src/components.ts` or `src/components.js`; you can then delete the unused
-robot component and system files. To remove the welcome panel, delete its scene
-node and its `PanelSystem` registration from the application entry point.
+## Architecture
 
-The robot stands on the second of three numbered stations. The first holds dark
-pieces you can grab and move, and the third holds a ring you can spin in place.
-The studio props (the plinths and the dark pieces, plus the floor and stage in VR
-and Desktop 3D) are built in code in `src/scene-assets/studio.scene-asset.ts` or
-`.js`. The VR and Desktop 3D background furniture is built the same way in
-`src/scene-assets/decor.scene-asset.ts` or `.js`, so the starter downloads no
-extra models. To remove any of them, delete their scene nodes and their entries
-in `src/assets.ts` or `src/assets.js`, then delete the files you no longer use.
-The station labels are `public/ui/label-*.uikitml`.
+This is **two deployments, not one**:
 
-The rest of the look is built-in components in the scene, which you can edit in
-the editor without code. The soft light on every object is the scene root's
-`IBLGradient` (select the Level Root to edit it), and the soft shadows under
-each object are `ContactShadow` nodes. In VR and Desktop 3D, the sky is the
-scene root's `DomeGradient` (its colors, tilt and dither are also on the Level
-Root), and the floor fades into it through the `DomeFade` on the floor node. AR
-projects have no sky or floor, so passthrough stays visible, and a
-`ShadowCatcher` node grounds the stations.
+| | |
+| --- | --- |
+| `dist/` | static build from `npm run build` |
+| `server/rooms.mjs` | always-on WebSocket room server |
 
-- Minimal scene walkthrough: https://iwsdk.dev/guides/01b-minimal-scene.html
-- XR-enabled projects — IWER emulator controls: https://iwsdk.dev/guides/02-testing-experience.html#iwer-controls
+The server is authoritative. It owns room membership, the round clock, hidden
+picks, damage and the winner; clients send intents and render what comes back.
+The AI rival's picks are scheduled server-side too, **so there is no match of
+any kind without it — solo included.** It cannot run on a static host.
+
+See [docs/DEPLOY.md](docs/DEPLOY.md) for deploying both halves, and
+[docs/SUBMISSION.md](docs/SUBMISSION.md) for the current state of the project.
+
+## Layout
+
+```
+iwsdk.config.json      project authority: scene, assets, components, world
+src/index.ts           World.create() + explicit system registration
+src/game/              gameplay systems (combat, match, UI, calibration, fx)
+src/scene-assets/      procedural Object3D prototypes
+public/scenes/         scene composition JSON
+public/ui/             UIKitML panels
+server/                authoritative room server
+```
+
+Deeper conventions live in `AGENTS.md` and the scoped instruction files beside
+the code they govern.
