@@ -1,0 +1,39 @@
+<!--
+  Fighter selection card ("Champion Arcade" look). Two instances float beside
+  the arena (yours and the rival's). Content, colours and the flip are driven
+  by src/game/card-system.ts. The emblem is a square turned 45 degrees: mint
+  with "?" while hidden, gold with the fighter icon once revealed.
+-->
+<style>
+  .root { flex-direction: column; align-items: center; gap: 4px; width: 180px; padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; background-color: #f5f6f3; border-width: 2px; border-color: #202b3b; border-radius: 28px; }
+  .owner { width: 156px; font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #202b3b; text-align: center; }
+  .band { width: 156px; height: 26px; justify-content: center; align-items: center; background-color: #202b3b; border-radius: 14px; }
+  .role { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #ffffff; }
+  .art { width: 156px; height: 88px; justify-content: center; align-items: center; }
+  .gem { width: 52px; height: 52px; justify-content: center; align-items: center; background-color: #70e9d0; border-width: 3px; border-color: #202b3b; transform-rotate-z: 45; }
+  .gem-face { width: 52px; height: 52px; justify-content: center; align-items: center; transform-rotate-z: -45; }
+  .icon { width: 40px; height: 40px; color: #202b3b; }
+  .back { font-size: 40px; font-weight: 700; color: #202b3b; }
+  .name { font-size: 26px; font-weight: 700; color: #202b3b; text-align: center; }
+  .track { width: 156px; height: 6px; background-color: #ccd9de; }
+  .fill { width: 1px; height: 6px; background-color: #202b3b; }
+  .status-box { width: 156px; justify-content: center; align-items: center; padding-top: 10px; padding-bottom: 10px; padding-left: 8px; padding-right: 8px; background-color: #202b3b; border-radius: 14px; }
+  .status { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #ffffff; text-align: center; }
+</style>
+<div id="card-root" class="root">
+  <div id="card-owner" class="owner">YOU</div>
+  <div id="card-band" class="band"><div id="card-role" class="role">CHAMPION</div></div>
+  <div class="art">
+    <div id="card-gem" class="gem">
+      <div class="gem-face">
+        <Grab id="icon-rock" class="icon" style="display: none"></Grab>
+        <Hand id="icon-paper" class="icon" style="display: none"></Hand>
+        <Scissors id="icon-scissors" class="icon" style="display: none"></Scissors>
+        <div id="icon-back" class="back">?</div>
+      </div>
+    </div>
+  </div>
+  <div id="card-name" class="name">GET READY</div>
+  <div id="card-track" class="track"><div id="card-fill" class="fill"></div></div>
+  <div class="status-box"><div id="card-status" class="status"></div></div>
+</div>

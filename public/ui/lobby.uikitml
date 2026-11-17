@@ -1,0 +1,170 @@
+<!--
+  HotHandZ onboarding + lobby ("Champion Arcade" look, from the Framer
+  page "Champion Arcade · Game UI"). One panel, relabelled per step by
+  src/game/ui-system.ts. Every element id below is addressed from code.
+
+  The headset renderer has no gradients, shadows, italics or custom shapes, so:
+  the angled header edge is a flat mint rule, the buttons' offset shadow is a
+  3-unit mint strip under each button, and headings are bold (not italic).
+-->
+<style>
+  .root { flex-direction: column; width: 480px; background-color: #f5f6f3; border-width: 1px; border-color: #c2d3da; border-radius: 28px; }
+  .header { flex-direction: column; align-items: center; gap: 6px; padding-top: 18px; padding-bottom: 16px; padding-left: 26px; padding-right: 26px; background-color: #202b3b; border-top-left-radius: 28px; border-top-right-radius: 28px; }
+  .rule { width: 480px; height: 5px; background-color: #70e9d0; }
+  .eyebrow { color: #70e9d0; font-size: 15px; font-weight: 700; letter-spacing: 2px; text-align: center; }
+  .heading { width: 428px; color: #ffffff; font-size: 34px; font-weight: 700; line-height: 1.15; text-align: center; }
+  .content { flex-direction: column; align-items: center; gap: 8px; padding-top: 18px; padding-left: 26px; padding-right: 26px; padding-bottom: 10px; }
+  .body { width: 428px; color: #263548; font-size: 18px; line-height: 1.35; text-align: center; }
+  .hint { width: 428px; color: #5b6d7c; font-size: 15px; line-height: 1.35; text-align: center; letter-spacing: 1px; }
+  .row { flex-direction: row; justify-content: center; align-items: center; gap: 12px; padding-left: 26px; padding-right: 26px; padding-bottom: 12px; }
+  .grow { flex-grow: 1; }
+  .wrap { flex-wrap: wrap; gap: 8px; }
+
+  .btn { flex-direction: column; background-color: #70e9d0; padding-bottom: 3px; cursor: pointer; border-radius: 999px; }
+  .btn-face { flex-direction: row; justify-content: center; align-items: center; gap: 8px; padding-top: 12px; padding-bottom: 12px; padding-left: 16px; padding-right: 16px; border-width: 1px; border-radius: 999px; }
+  .primary { background-color: #ff8c21; border-color: #ffe3b3; }
+  .primary:hover { background-color: #ff9f42; }
+  .secondary { background-color: #202b3b; border-color: #202b3b; }
+  .secondary:hover { background-color: #2c3a4f; }
+  .btn-label { font-size: 16px; font-weight: 700; color: #ffffff; }
+  .btn-icon { width: 18px; height: 18px; color: #ffffff; }
+
+  .input-box { flex-grow: 1; background-color: #ffffff; border-width: 1px; border-color: #202b3b; }
+  .input { flex-grow: 1; background-color: #ffffff; border-radius: 0px; color: #263548; }
+
+  .check { width: 34px; height: 34px; border-width: 2px; border-color: #202b3b; background-color: #70e9d0; justify-content: center; align-items: center; cursor: pointer; }
+  .tick { width: 22px; height: 22px; color: #202b3b; }
+  .agree { font-size: 20px; color: #263548; }
+
+  .chips { flex-direction: row; gap: 8px; padding-top: 4px; padding-left: 26px; padding-right: 26px; }
+  .chip { flex-grow: 1; flex-direction: column; align-items: center; gap: 4px; padding-top: 10px; padding-bottom: 10px; background-color: #e5edf0; border-width: 2px; border-color: #c2d3da; }
+  .chip-icon { width: 34px; height: 34px; color: #202b3b; }
+  .chip-name { font-size: 17px; font-weight: 700; color: #202b3b; letter-spacing: 1px; }
+  .chip-hero { font-size: 13px; color: #5b6d7c; }
+  .track-row { padding-left: 26px; padding-right: 26px; padding-top: 12px; padding-bottom: 14px; }
+  .track { width: 428px; height: 12px; background-color: #cbd9df; }
+  .fill { width: 1px; height: 12px; background-color: #168ca7; }
+
+  .code-box { flex-grow: 1; justify-content: center; align-items: center; padding-top: 4px; padding-bottom: 4px; background-color: #e5edf0; }
+  .code { font-size: 44px; font-weight: 700; color: #202b3b; letter-spacing: 10px; }
+
+  .keypad { flex-direction: column; gap: 8px; padding-left: 26px; padding-right: 26px; padding-bottom: 22px; }
+  .keyrow { flex-direction: row; gap: 8px; }
+  .key { flex-grow: 1; height: 54px; background-color: #ffffff; border-width: 1px; border-color: #c2d3da; justify-content: center; align-items: center; cursor: pointer; border-radius: 999px; }
+  .key:hover { background-color: #e5edf0; }
+  .keytext { font-size: 24px; font-weight: 700; color: #202b3b; }
+  .keyaccent { background-color: #ff8c21; border-color: #ff8c21; }
+  .keyaccent:hover { background-color: #ff9f42; }
+  .keytext-light { font-size: 24px; font-weight: 700; color: #ffffff; }
+</style>
+<div class="root">
+  <div class="header">
+    <div id="lobby-eyebrow" class="eyebrow">HOTHANDZ</div>
+    <div id="lobby-title" class="heading">HotHandZ</div>
+  </div>
+  <div class="rule"></div>
+  <div class="content">
+    <div id="lobby-status" class="body">Your name appears above your arena.</div>
+    <div id="lobby-hint" class="hint">Tap with a fingertip, or point and pinch.</div>
+  </div>
+
+  <!-- 1. Name -->
+  <div id="name-row" class="row">
+    <div class="input-box"><Input id="name-input" class="input" placeholder="Username"></Input></div>
+  </div>
+
+  <!-- 2. Consent -->
+  <div id="consent-row" class="row" style="display: none">
+    <div id="agree-box" class="check"><Check id="agree-tick" class="tick"></Check></div>
+    <div id="agree-label" class="agree">I agree</div>
+  </div>
+
+  <!-- Tutorial chips + hold progress -->
+  <div id="tut" class="chips" style="display: none">
+    <div id="chip-rock" class="chip">
+      <Grab class="chip-icon"></Grab>
+      <div class="chip-name">ROCK</div>
+      <div class="chip-hero">Heavyweight</div>
+    </div>
+    <div id="chip-paper" class="chip">
+      <Hand class="chip-icon"></Hand>
+      <div class="chip-name">PAPER</div>
+      <div class="chip-hero">Tactician</div>
+    </div>
+    <div id="chip-scissors" class="chip">
+      <Scissors class="chip-icon"></Scissors>
+      <div class="chip-name">SCISSORS</div>
+      <div class="chip-hero">Speed fighter</div>
+    </div>
+  </div>
+  <div id="tut-track" class="track-row" style="display: none"><div class="track"><div id="tut-fill" class="fill"></div></div></div>
+
+  <div id="code-row" class="row" style="display: none">
+    <div class="code-box"><div id="code-display" class="code">----</div></div>
+  </div>
+
+  <!-- Step actions (relabelled per step) -->
+  <div id="step-actions" class="row">
+    <div id="primary-btn" class="btn grow">
+      <div class="btn-face primary">
+        <ArrowRight class="btn-icon"></ArrowRight>
+        <div id="primary-label" class="btn-label">Ready to Battle!</div>
+      </div>
+    </div>
+    <div id="secondary-btn" class="btn">
+      <div class="btn-face secondary">
+        <div id="secondary-label" class="btn-label">Continue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Private-room menu -->
+  <div id="lobby-actions" class="row" style="display: none">
+    <div id="create-button" class="btn grow">
+      <div class="btn-face primary"><Swords class="btn-icon"></Swords><div class="btn-label">Create Room</div></div>
+    </div>
+    <div id="join-button" class="btn grow">
+      <div class="btn-face secondary"><LogIn class="btn-icon"></LogIn><div class="btn-label">Join Room</div></div>
+    </div>
+  </div>
+  <div id="ai-row" class="row wrap" style="display: none">
+    <div id="ai-button" class="btn">
+      <div class="btn-face secondary"><Bot class="btn-icon"></Bot><div class="btn-label">Practice vs AI</div></div>
+    </div>
+    <div id="help-button" class="btn">
+      <div class="btn-face secondary"><GraduationCap class="btn-icon"></GraduationCap><div class="btn-label">How to play</div></div>
+    </div>
+    <div id="back-button" class="btn">
+      <div class="btn-face secondary"><Users class="btn-icon"></Users><div class="btn-label">Matchmaking</div></div>
+    </div>
+  </div>
+  <!-- Leave the experience from the lobby: drops the room and exits AR. -->
+  <div id="quit-row" class="row" style="display: none">
+    <div id="quit-button" class="btn grow">
+      <div class="btn-face secondary"><Power class="btn-icon"></Power><div class="btn-label">End game</div></div>
+    </div>
+  </div>
+
+  <div id="keypad" class="keypad" style="display: none">
+    <div class="keyrow">
+      <button id="key-1" class="key"><span class="keytext">1</span></button>
+      <button id="key-2" class="key"><span class="keytext">2</span></button>
+      <button id="key-3" class="key"><span class="keytext">3</span></button>
+    </div>
+    <div class="keyrow">
+      <button id="key-4" class="key"><span class="keytext">4</span></button>
+      <button id="key-5" class="key"><span class="keytext">5</span></button>
+      <button id="key-6" class="key"><span class="keytext">6</span></button>
+    </div>
+    <div class="keyrow">
+      <button id="key-7" class="key"><span class="keytext">7</span></button>
+      <button id="key-8" class="key"><span class="keytext">8</span></button>
+      <button id="key-9" class="key"><span class="keytext">9</span></button>
+    </div>
+    <div class="keyrow">
+      <button id="key-del" class="key"><span class="keytext">Del</span></button>
+      <button id="key-0" class="key"><span class="keytext">0</span></button>
+      <button id="key-go" class="key keyaccent"><span class="keytext-light">Join</span></button>
+    </div>
+  </div>
+</div>

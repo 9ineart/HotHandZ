@@ -1,0 +1,21 @@
+# Caddy in front of the HotHandZ room server.
+#
+# This exists for one reason: the game is served over HTTPS, and a secure page
+# is not allowed to open an insecure WebSocket. The client therefore has to
+# reach the server at wss://, which needs a real certificate on a real
+# hostname -- you cannot get one for a bare IP address. Caddy obtains and
+# renews that certificate on its own, which is the whole job.
+#
+# Replace the hostname, then:
+#   sudo caddy fmt --overwrite /etc/caddy/Caddyfile
+#   sudo systemctl reload caddy
+#
+# Caddy upgrades WebSocket connections through reverse_proxy without any extra
+# configuration, so the socket path needs no special case here. rooms.mjs
+# ignores every path except /hca-ws and answers anything else with a one-line
+# health message, which doubles as a way to check the box is alive from a
+# browser.
+
+rooms.example.com {
+	reverse_proxy 127.0.0.1:8787
+}

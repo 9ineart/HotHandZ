@@ -1,0 +1,22 @@
+# Normalise line endings. The repository stores LF; a Windows checkout gets
+# CRLF back, and a Linux checkout gets LF.
+* text=auto
+
+# These are cloned straight onto the Ubuntu VM and read by systemd, Caddy and
+# Node. Pin them to LF so a Windows checkout can never hand a Linux service a
+# file full of carriage returns.
+deploy/** text eol=lf
+*.mjs text eol=lf
+*.sh text eol=lf
+
+# Assets git should never try to diff or convert.
+*.glb binary
+*.bin binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.mp3 binary
+*.ogg binary
+*.wav binary

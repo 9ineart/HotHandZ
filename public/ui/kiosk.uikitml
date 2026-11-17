@@ -1,0 +1,36 @@
+<!--
+  The hand menu: three round buttons that appear over the left palm when it is
+  turned toward the player, and open one panel each in front of them.
+  Driven by src/game/kiosk-system.ts, which rides it on the tracked hand in XR
+  and falls back to the courtyard's water edge on the flat desktop view.
+
+  The active button takes the player's mint; the rest stay navy.
+
+  The caption band has to stay narrow enough to clear the button's own curve
+  where it sits. A 999 radius on a 104x92 button rounds it to a stadium, and
+  the band rides below centre, where the shape has already pulled in to about
+  80px -- a full-width band hangs out over the edge on both sides. The extra
+  bottom padding lifts the whole stack to where there is room for it.
+-->
+<style>
+  .root { flex-direction: row; gap: 10px; }
+  .btn { flex-direction: column; align-items: center; justify-content: center; gap: 6px; width: 104px; height: 92px; background-color: #f5f6f3; border-width: 2px; border-color: #202b3b; padding-top: 10px; padding-bottom: 18px; cursor: pointer; border-radius: 999px; }
+  .btn:hover { background-color: #ffffff; border-color: #ff8c21; }
+  .cap { width: 78px; height: 26px; justify-content: center; align-items: center; background-color: #202b3b; }
+  .label { font-size: 13px; font-weight: 700; letter-spacing: 1px; color: #ffffff; }
+  .icon { width: 30px; height: 30px; color: #202b3b; }
+</style>
+<div class="root">
+  <div id="kiosk-achievements" class="btn">
+    <Trophy id="kiosk-icon-achievements" class="icon"></Trophy>
+    <div id="kiosk-cap-achievements" class="cap"><div class="label">AWARDS</div></div>
+  </div>
+  <div id="kiosk-leaderboard" class="btn">
+    <ChartColumn id="kiosk-icon-leaderboard" class="icon"></ChartColumn>
+    <div id="kiosk-cap-leaderboard" class="cap"><div class="label">RANKING</div></div>
+  </div>
+  <div id="kiosk-sound" class="btn">
+    <Volume2 id="kiosk-icon-sound" class="icon"></Volume2>
+    <div id="kiosk-cap-sound" class="cap"><div class="label">SOUND</div></div>
+  </div>
+</div>

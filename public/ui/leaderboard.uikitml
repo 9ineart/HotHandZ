@@ -1,0 +1,62 @@
+<!--
+  Leaderboard panel, opened from the courtyard kiosk. The board is the shared
+  one held by the room server (server/leaderboard.mjs): everyone connected to
+  this deployment. Rows lb-0 .. lb-9, each with -pos, -name, -stars, -wins.
+  The player's own standing sits in its own mint strip under the header, so it
+  is visible whether or not they are in the top ten.
+
+  Filled by src/game/kiosk-system.ts from the server's leaderboard message.
+-->
+<style>
+  .root { flex-direction: column; width: 470px; background-color: #f5f6f3; border-width: 1px; border-color: #c2d3da; border-radius: 28px; }
+  .header { flex-direction: row; justify-content: space-between; align-items: center; padding-top: 14px; padding-bottom: 14px; padding-left: 18px; padding-right: 14px; background-color: #202b3b; border-top-left-radius: 28px; border-top-right-radius: 28px; }
+  .title { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #ffffff; }
+  .close { width: 34px; height: 34px; justify-content: center; align-items: center; background-color: #2c3a4f; cursor: pointer; border-radius: 999px; }
+  .close:hover { background-color: #ff8c21; }
+  .close-icon { width: 18px; height: 18px; color: #ffffff; }
+  .rule { height: 5px; background-color: #70e9d0; }
+  .you-strip { flex-direction: row; justify-content: space-between; align-items: center; padding-top: 12px; padding-bottom: 12px; padding-left: 18px; padding-right: 18px; background-color: #bcefe2; }
+  .you-pos { font-size: 19px; font-weight: 700; color: #0e7a65; }
+  .you-note { font-size: 13px; color: #24505f; }
+  .cols { flex-direction: row; align-items: center; padding-top: 10px; padding-bottom: 6px; padding-left: 20px; padding-right: 20px; }
+  .col-pos { width: 44px; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #5d6c7e; }
+  .col-name { width: 220px; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #5d6c7e; }
+  .col-stars { width: 80px; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #5d6c7e; text-align: right; }
+  .col-wins { width: 70px; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #5d6c7e; text-align: right; }
+  .row { flex-direction: row; align-items: center; padding-top: 6px; padding-bottom: 6px; padding-left: 20px; padding-right: 20px; }
+  .pos { width: 44px; font-size: 15px; font-weight: 700; color: #9c530b; }
+  .name { width: 220px; font-size: 15px; color: #202b3b; }
+  .stars { width: 80px; font-size: 15px; font-weight: 700; color: #202b3b; text-align: right; }
+  .wins { width: 70px; font-size: 15px; color: #5d6c7e; text-align: right; }
+  .status { font-size: 14px; color: #5d6c7e; text-align: center; padding-top: 18px; padding-bottom: 18px; }
+  .foot { height: 14px; }
+</style>
+<div class="root">
+  <div class="header">
+    <div class="title">LEADERBOARD</div>
+    <div id="lb-close" class="close"><X class="close-icon"></X></div>
+  </div>
+  <div class="rule"></div>
+  <div class="you-strip">
+    <div id="lb-you-pos" class="you-pos">Unranked</div>
+    <div id="lb-you-note" class="you-note">Win a match to join the board</div>
+  </div>
+  <div id="lb-status" class="status">Asking the server...</div>
+  <div id="lb-cols" class="cols" style="display: none">
+    <div class="col-pos">#</div>
+    <div class="col-name">PLAYER</div>
+    <div class="col-stars">STARS</div>
+    <div class="col-wins">WINS</div>
+  </div>
+  <div id="lb-0" class="row" style="display: none"><div id="lb-0-pos" class="pos">1</div><div id="lb-0-name" class="name">-</div><div id="lb-0-stars" class="stars">0</div><div id="lb-0-wins" class="wins">0</div></div>
+  <div id="lb-1" class="row" style="display: none"><div id="lb-1-pos" class="pos">2</div><div id="lb-1-name" class="name">-</div><div id="lb-1-stars" class="stars">0</div><div id="lb-1-wins" class="wins">0</div></div>
+  <div id="lb-2" class="row" style="display: none"><div id="lb-2-pos" class="pos">3</div><div id="lb-2-name" class="name">-</div><div id="lb-2-stars" class="stars">0</div><div id="lb-2-wins" class="wins">0</div></div>
+  <div id="lb-3" class="row" style="display: none"><div id="lb-3-pos" class="pos">4</div><div id="lb-3-name" class="name">-</div><div id="lb-3-stars" class="stars">0</div><div id="lb-3-wins" class="wins">0</div></div>
+  <div id="lb-4" class="row" style="display: none"><div id="lb-4-pos" class="pos">5</div><div id="lb-4-name" class="name">-</div><div id="lb-4-stars" class="stars">0</div><div id="lb-4-wins" class="wins">0</div></div>
+  <div id="lb-5" class="row" style="display: none"><div id="lb-5-pos" class="pos">6</div><div id="lb-5-name" class="name">-</div><div id="lb-5-stars" class="stars">0</div><div id="lb-5-wins" class="wins">0</div></div>
+  <div id="lb-6" class="row" style="display: none"><div id="lb-6-pos" class="pos">7</div><div id="lb-6-name" class="name">-</div><div id="lb-6-stars" class="stars">0</div><div id="lb-6-wins" class="wins">0</div></div>
+  <div id="lb-7" class="row" style="display: none"><div id="lb-7-pos" class="pos">8</div><div id="lb-7-name" class="name">-</div><div id="lb-7-stars" class="stars">0</div><div id="lb-7-wins" class="wins">0</div></div>
+  <div id="lb-8" class="row" style="display: none"><div id="lb-8-pos" class="pos">9</div><div id="lb-8-name" class="name">-</div><div id="lb-8-stars" class="stars">0</div><div id="lb-8-wins" class="wins">0</div></div>
+  <div id="lb-9" class="row" style="display: none"><div id="lb-9-pos" class="pos">10</div><div id="lb-9-name" class="name">-</div><div id="lb-9-stars" class="stars">0</div><div id="lb-9-wins" class="wins">0</div></div>
+  <div class="foot"></div>
+</div>

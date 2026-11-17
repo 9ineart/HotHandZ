@@ -1,0 +1,15 @@
+<!--
+  The round-win points pop: a small gold chip that rises off the player's own
+  nameplate and shrinks away. Driven by src/game/plate-system.ts, which sets the
+  figure and animates the whole panel's transform rather than its layout -- a
+  per-frame margin change would re-flow the panel every frame.
+-->
+<style>
+  .root { flex-direction: column; align-items: center; gap: 2px; padding-top: 8px; padding-bottom: 8px; padding-left: 16px; padding-right: 16px; background-color: #ffd12c; border-width: 2px; border-color: #202b3b; border-radius: 28px; }
+  .figure { font-size: 34px; font-weight: 700; color: #202b3b; text-align: center; }
+  .caption { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #6b5200; text-align: center; }
+</style>
+<div class="root">
+  <div id="points-figure" class="figure">+35</div>
+  <div id="points-caption" class="caption">POINTS</div>
+</div>

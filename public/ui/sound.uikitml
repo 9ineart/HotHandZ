@@ -1,0 +1,86 @@
+<!--
+  Sound panel, opened from the courtyard kiosk. One mute switch and three
+  levels: the master, the combat effects, and the interface sounds that carry
+  information (count-in, lock, the chirp that says your hand was read). The
+  split exists because those two kinds of sound compete; see
+  src/game/audio-settings.ts.
+
+  Each level row is snd-<key> with -down, -value and -up. Driven by
+  src/game/kiosk-system.ts, which also plays a test blip on every change so
+  the level can be heard while it is being set.
+-->
+<style>
+  .root { flex-direction: column; width: 440px; background-color: #f5f6f3; border-width: 1px; border-color: #c2d3da; border-radius: 28px; }
+  .header { flex-direction: row; justify-content: space-between; align-items: center; padding-top: 14px; padding-bottom: 14px; padding-left: 18px; padding-right: 14px; background-color: #202b3b; border-top-left-radius: 28px; border-top-right-radius: 28px; }
+  .title { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #ffffff; }
+  .close { width: 34px; height: 34px; justify-content: center; align-items: center; background-color: #2c3a4f; cursor: pointer; border-radius: 999px; }
+  .close:hover { background-color: #ff8c21; }
+  .close-icon { width: 18px; height: 18px; color: #ffffff; }
+  .rule { height: 5px; background-color: #70e9d0; }
+  .body { flex-direction: column; padding-top: 16px; padding-bottom: 18px; padding-left: 18px; padding-right: 18px; gap: 12px; }
+  .mute-row { flex-direction: row; justify-content: space-between; align-items: center; padding-top: 12px; padding-bottom: 12px; padding-left: 14px; padding-right: 14px; background-color: #e5edf0; cursor: pointer; }
+  .mute-row:hover { background-color: #dae6eb; }
+  .mute-label { font-size: 16px; font-weight: 700; color: #202b3b; }
+  .switch { width: 92px; height: 32px; justify-content: center; align-items: center; background-color: #70e9d0; border-radius: 999px; }
+  .switch-text { font-size: 14px; font-weight: 700; letter-spacing: 1px; color: #202b3b; }
+  .row { flex-direction: row; justify-content: space-between; align-items: center; gap: 12px; }
+  .texts { flex-direction: column; width: 190px; gap: 2px; }
+  .name { font-size: 16px; font-weight: 700; color: #202b3b; }
+  .hint { font-size: 12px; color: #5d6c7e; }
+  .controls { flex-direction: row; align-items: center; gap: 8px; }
+  .step { width: 40px; height: 40px; justify-content: center; align-items: center; background-color: #202b3b; cursor: pointer; border-radius: 999px; }
+  .step:hover { background-color: #ff8c21; }
+  .step-icon { width: 18px; height: 18px; color: #ffffff; }
+  .value { width: 66px; font-size: 18px; font-weight: 700; color: #202b3b; text-align: center; }
+  .bar { width: 170px; height: 6px; background-color: #e5edf0; }
+  .bar-fill { width: 1px; height: 6px; background-color: #70e9d0; }
+</style>
+<div class="root">
+  <div class="header">
+    <div class="title">SOUND</div>
+    <div id="snd-close" class="close"><X class="close-icon"></X></div>
+  </div>
+  <div class="rule"></div>
+  <div class="body">
+    <div id="snd-mute" class="mute-row">
+      <div class="mute-label">All sound</div>
+      <div id="snd-mute-switch" class="switch"><div id="snd-mute-text" class="switch-text">ON</div></div>
+    </div>
+    <div class="row">
+      <div class="texts">
+        <div class="name">Master</div>
+        <div class="hint">Everything you hear</div>
+      </div>
+      <div class="bar"><div id="snd-master-fill" class="bar-fill"></div></div>
+      <div class="controls">
+        <div id="snd-master-down" class="step"><Minus class="step-icon"></Minus></div>
+        <div id="snd-master-value" class="value">80%</div>
+        <div id="snd-master-up" class="step"><Plus class="step-icon"></Plus></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="texts">
+        <div class="name">Effects</div>
+        <div class="hint">Fighters and impacts</div>
+      </div>
+      <div class="bar"><div id="snd-effects-fill" class="bar-fill"></div></div>
+      <div class="controls">
+        <div id="snd-effects-down" class="step"><Minus class="step-icon"></Minus></div>
+        <div id="snd-effects-value" class="value">100%</div>
+        <div id="snd-effects-up" class="step"><Plus class="step-icon"></Plus></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="texts">
+        <div class="name">Interface</div>
+        <div class="hint">Count-in, locks, menus</div>
+      </div>
+      <div class="bar"><div id="snd-ui-fill" class="bar-fill"></div></div>
+      <div class="controls">
+        <div id="snd-ui-down" class="step"><Minus class="step-icon"></Minus></div>
+        <div id="snd-ui-value" class="value">100%</div>
+        <div id="snd-ui-up" class="step"><Plus class="step-icon"></Plus></div>
+      </div>
+    </div>
+  </div>
+</div>

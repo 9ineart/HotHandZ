@@ -1,0 +1,26 @@
+<!--
+  Fighter nameplate ("Champion Arcade" look): a square white plate with a
+  coloured badge, the fighter's name and their health bar. One instance floats
+  above each fighter's pad. Driven by src/game/plate-system.ts, which sets the
+  badge colour and icon, the name, and the bar every frame.
+-->
+<style>
+  .root { flex-direction: row; align-items: center; gap: 8px; width: 205px; height: 52px; background-color: #ffffff; border-width: 1px; border-color: #202b3b; padding-left: 7px; padding-right: 10px; border-radius: 8px; }
+  .badge { width: 36px; height: 36px; justify-content: center; align-items: center; border-width: 1px; border-color: #202b3b; background-color: #70e9d0; border-radius: 4px; }
+  .badge-icon { width: 24px; height: 24px; color: #202b3b; }
+  .body { flex-direction: column; align-items: flex-start; gap: 4px; width: 141px; }
+  .pname { width: 141px; font-size: 17px; font-weight: 700; color: #202b3b; }
+  .track { width: 136px; height: 9px; background-color: #d0dde2; }
+  .fill { width: 136px; height: 9px; background-color: #168ca7; }
+</style>
+<div class="root">
+  <div id="plate-badge" class="badge">
+    <Grab id="plate-icon-rock" class="badge-icon" style="display: none"></Grab>
+    <Hand id="plate-icon-paper" class="badge-icon" style="display: none"></Hand>
+    <Scissors id="plate-icon-scissors" class="badge-icon" style="display: none"></Scissors>
+  </div>
+  <div class="body">
+    <div id="plate-name" class="pname">FIGHTER</div>
+    <div class="track"><div id="plate-fill" class="fill"></div></div>
+  </div>
+</div>

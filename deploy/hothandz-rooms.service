@@ -1,0 +1,36 @@
+[Unit]
+Description=HotHandZ room server
+Documentation=https://github.com/your-org/hothandz
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hothandz
+Group=hothandz
+WorkingDirectory=/srv/hothandz
+
+Environment=NODE_ENV=production
+Environment=PORT=8787
+# The leaderboard lives outside the deploy directory on purpose: rooms.mjs
+# writes it at runtime, and keeping it under /srv would mean every redeploy
+# that replaces the checkout takes the worldwide board with it.
+Environment=HCA_LEADERBOARD_FILE=/var/lib/hothandz/leaderboard.json
+
+ExecStart=/usr/bin/node server/rooms.mjs
+# Room state is held in memory, so a crash drops matches in progress. There is
+# nothing to recover and nothing to corrupt; coming straight back up is the
+# best behaviour available.
+Restart=always
+RestartSec=3
+
+# The process only listens on localhost, reads its own code, and writes one
+# JSON file. Nothing else on the box needs to be reachable from it.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/hothandz
+
+[Install]
+WantedBy=multi-user.target
