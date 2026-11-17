@@ -19,16 +19,18 @@ below covers (video, written entry, deadline format, team details).
       safe, but check what they actually ask for.
 - [x] ~~**Get a domain name.**~~ Done — `hothandz.nineart.studio`.
 - [x] ~~**Create the Azure account.**~~ Done.
-- [ ] **Create the B1s VM** — Ubuntu 24.04, size B1s, SSH public key, inbound
-      22/80/443 only. Do not open 8787; the room server listens on localhost
-      and Caddy is the only thing that reaches it.
-- [ ] **Point `hothandz.nineart.studio` at the VM** with an `A` record, and set
-      the VM's public IP to Static first. Azure's default IP is dynamic, and
-      when it changes the DNS and the certificate both break.
-- [ ] **Deploy the game and the room server to that one host.** Both are served
-      from the same origin, which means `npm run build` needs no environment
-      variable — the client falls back to `wss://<its own host>/hca-ws`. Confirm
-      `https://hothandz.nineart.studio` loads and a solo match counts down.
+- [x] ~~**Create the VM.**~~ Done — `Standard_B2ats_v2` in `swedencentral`
+      (B1s is restricted on this subscription in most regions), static IP
+      `20.240.138.82`, ports 22/80/443 only.
+- [x] ~~**Point DNS at the VM.**~~ Done — `hothandz.nineart.studio` and the
+      `www` form both resolve to it.
+- [x] ~~**Deploy the game and the room server.**~~ Done. Verified from outside:
+      `200` over HTTPS with a valid Let's Encrypt certificate, `<title>HotHandZ`,
+      the JS bundle (2.5 MB), `courtyard.glb`, the UIKitML panels and the scene
+      JSON all serving, and `/hca-ws` reaching the room server through Caddy.
+- [ ] **Play a full match on the deployed site**, in a browser and then on the
+      Quest. Everything above proves it is served correctly; none of it proves
+      the game plays.
 - [ ] **Play it on a real Quest.** This has never been done. Every check so far
       has been the flat desktop view or the IWER emulator — which cannot prove
       hand tracking, gesture recognition, passthrough, table calibration,
