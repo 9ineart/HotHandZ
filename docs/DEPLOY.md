@@ -155,7 +155,7 @@ sudo mkdir -p /srv/hothandz /var/lib/hothandz
 sudo git clone https://github.com/9ineart/HotHandZ.git /srv/hothandz
 cd /srv/hothandz
 sudo npm ci
-sudo npm run build
+sudo NODE_OPTIONS=--max-old-space-size=2048 npm run build
 sudo chown -R hothandz:hothandz /srv/hothandz /var/lib/hothandz
 ```
 
@@ -205,7 +205,8 @@ none of which the desktop view or the emulator can show you.
 ## Updating
 
 ```bash
-cd /srv/hothandz && sudo git pull && sudo npm ci && sudo npm run build
+cd /srv/hothandz && sudo git pull && sudo npm ci
+sudo NODE_OPTIONS=--max-old-space-size=2048 npm run build
 sudo systemctl restart hothandz-rooms
 ```
 

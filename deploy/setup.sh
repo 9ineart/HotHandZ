@@ -82,7 +82,12 @@ say "Installing dependencies and building"
 # it. (ws is a real dependency, so the server has it either way.)
 cd "$APP_DIR"
 npm ci
-npm run build
+# V8 picks its heap ceiling from the RAM it can see, and on a 1 GiB box that
+# ceiling is below what a Vite production build needs: it dies with "JavaScript
+# heap out of memory" even though swap is sitting there untouched, because the
+# limit being hit is V8's own, not the system's. Raise it explicitly and let
+# the swap absorb the overflow -- slower, but it finishes.
+NODE_OPTIONS=--max-old-space-size=2048 npm run build
 
 chown -R "$APP_USER:$APP_USER" "$APP_DIR" "$DATA_DIR"
 
