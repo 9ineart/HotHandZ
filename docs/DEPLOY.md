@@ -54,7 +54,22 @@ request will fail.
 dig +short hothandz.nineart.studio
 ```
 
-## 3. Install
+## 3. Install — the short way
+
+Everything in sections 3 and 4 is scripted. On the VM:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/9ineart/HotHandZ/main/deploy/setup.sh | sudo bash
+```
+
+It adds swap, installs Node 22 and Caddy, clones and builds the app, installs
+the service and the proxy, starts both, and checks the server is answering. It
+is safe to run again — a second run updates, rebuilds and restarts.
+
+Then skip to **section 5**. The rest of this section and section 4 are the
+same steps by hand, if you would rather see them.
+
+## 3a. Install — by hand
 
 ```bash
 sudo apt update && sudo apt install -y git curl

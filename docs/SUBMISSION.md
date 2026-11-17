@@ -18,7 +18,10 @@ below covers (video, written entry, deadline format, team details).
       personal data before pushing and came back clean, so opening it up is
       safe, but check what they actually ask for.
 - [x] ~~**Get a domain name.**~~ Done — `hothandz.nineart.studio`.
-- [ ] **Create the Azure account and the B1s VM** — `docs/DEPLOY.md`.
+- [x] ~~**Create the Azure account.**~~ Done.
+- [ ] **Create the B1s VM** — Ubuntu 24.04, size B1s, SSH public key, inbound
+      22/80/443 only. Do not open 8787; the room server listens on localhost
+      and Caddy is the only thing that reaches it.
 - [ ] **Point `hothandz.nineart.studio` at the VM** with an `A` record, and set
       the VM's public IP to Static first. Azure's default IP is dynamic, and
       when it changes the DNS and the certificate both break.
