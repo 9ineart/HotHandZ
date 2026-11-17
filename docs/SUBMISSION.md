@@ -11,9 +11,12 @@ below covers (video, written entry, deadline format, team details).
 
 ## P0 — nothing can be submitted without these
 
-- [ ] **Make this a git repository and push it.** It still isn't one. Every
-      deploy path needs it, and `docs/DEPLOY.md` step 4 runs
-      `git clone YOUR_REPO_URL` on the VM.
+- [x] ~~**Make this a git repository and push it.**~~ Done — pushed to
+      <https://github.com/9ineart/HotHandz>, 169 files, 10.19 MB.
+- [ ] **Confirm the repo's visibility matches the competition's rules.** Most
+      require a public repo. The commit was scanned for credentials and
+      personal data before pushing and came back clean, so opening it up is
+      safe, but check what they actually ask for.
 - [ ] **Get a domain name.** The page is HTTPS, so the socket must be `wss://`,
       which needs a certificate, which is never issued for a bare IP. Without
       a hostname there is no deployment. This is the long-lead item if you
@@ -68,8 +71,8 @@ Both need a file from you before I can do anything.
       App Manifest on a public HTTPS URL is a prerequisite for PWA install and
       for Bubblewrap / Horizon Store packaging, so this is a blocker *if* the
       competition wants an installable app or an APK rather than a URL.
-- [ ] **Rewrite README.md.** It is still the stock IWSDK scaffold text and
-      opens with "# IWSDK App". It is the first thing a judge reads.
+- [x] ~~**Rewrite README.md.**~~ Done — rewritten while resolving the merge
+      conflict against the README GitHub generated.
 - [ ] **Fix or remove `npm run test:logic`.** It runs `node --test test/` and
       there is no `test/` directory, so it fails outright.
 - [ ] **Add a LICENSE** if the competition requires one.
