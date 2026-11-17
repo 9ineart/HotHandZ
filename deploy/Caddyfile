@@ -22,6 +22,16 @@ hothandz.nineart.studio, www.hothandz.nineart.studio {
 		reverse_proxy 127.0.0.1:8787
 	}
 
+	# Served as real files, never through the SPA fallback below. Android
+	# fetches /.well-known/assetlinks.json to verify the TWA, and with the
+	# fallback in play a missing or misspelled file comes back as index.html
+	# with a 200 -- so verification fails against a page of HTML instead of
+	# telling you the file is not there.
+	handle /.well-known/* {
+		root * /srv/hothandz/dist
+		file_server
+	}
+
 	# Everything else is the built game.
 	handle {
 		root * /srv/hothandz/dist
