@@ -6,6 +6,19 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# Bubblewrap: the Gradle project it generates, the signed artefacts, and above
+# all the signing key. This repository is public, and a published keystore is
+# unrecoverable -- the package id and key are paired permanently, so a leak
+# means abandoning the Store listing and starting again under a new name. The
+# key itself lives outside the repo entirely (see twa/twa-manifest.json);
+# these patterns are the second line of defence.
+twa/*
+!twa/twa-manifest.json
+*.keystore
+*.jks
+*.apk
+*.aab
+
 # Environment files
 .env
 .env.local

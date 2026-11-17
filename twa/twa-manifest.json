@@ -1,0 +1,28 @@
+{
+  "packageId": "studio.nineart.hothandz",
+  "applicationId": "0",
+  "host": "hothandz.nineart.studio",
+  "name": "HotHandZ",
+  "launcherName": "HotHandZ",
+  "display": "standalone",
+  "orientation": "landscape",
+  "themeColor": "#202b3b",
+  "backgroundColor": "#202b3b",
+  "startUrl": "/",
+  "iconUrl": "https://hothandz.nineart.studio/icons/icon-512.png",
+  "maskableIconUrl": "https://hothandz.nineart.studio/icons/icon-512-maskable.png",
+  "webManifestUrl": "https://hothandz.nineart.studio/manifest.webmanifest",
+  "signingKey": {
+    "path": "C:/Users/nayin/keys/hothandz.keystore",
+    "alias": "hothandz"
+  },
+  "appVersion": "1",
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "fallbackType": "customtabs",
+  "features": {},
+  "isMetaQuest": true,
+  "horizonOSAppMode": "immersive",
+  "fingerprints": [],
+  "minSdkVersion": 23
+}
