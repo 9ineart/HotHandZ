@@ -25,6 +25,13 @@ hothandz.nineart.studio, www.hothandz.nineart.studio {
 	# Everything else is the built game.
 	handle {
 		root * /srv/hothandz/dist
+
+		# Go's MIME table does not map .webmanifest, so file_server would hand
+		# it back as something generic. Bubblewrap and the installability check
+		# both want application/manifest+json.
+		@manifest path /manifest.webmanifest
+		header @manifest Content-Type "application/manifest+json"
+
 		try_files {path} /index.html
 		file_server
 	}

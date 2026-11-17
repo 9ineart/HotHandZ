@@ -1,0 +1,31 @@
+{
+  "name": "HotHandZ",
+  "short_name": "HotHandZ",
+  "description": "Rock, Paper, Scissors as a tabletop game for VR. Throw with your bare hands against an arena anchored to your real table.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#202b3b",
+  "theme_color": "#202b3b",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}
