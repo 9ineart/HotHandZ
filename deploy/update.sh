@@ -21,6 +21,12 @@ fi
 
 say() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 
+# The checkout belongs to the service user, and this runs as root, so git
+# refuses it as "dubious ownership" until the path is declared safe.
+if ! git config --global --get-all safe.directory 2>/dev/null | grep -qx "$APP_DIR"; then
+  git config --global --add safe.directory "$APP_DIR"
+fi
+
 cd "$APP_DIR"
 
 before_head=$(git rev-parse HEAD)

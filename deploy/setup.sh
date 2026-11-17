@@ -69,6 +69,14 @@ fi
 id -u "$APP_USER" >/dev/null 2>&1 || useradd --system --home "$APP_DIR" --shell /usr/sbin/nologin "$APP_USER"
 mkdir -p "$APP_DIR" "$DATA_DIR"
 
+# This script chowns the checkout to the service user on its way out, so every
+# later run finds git (as root here) looking at a repository owned by somebody
+# else, which git refuses to touch. Declaring this one path safe is the
+# documented escape hatch.
+if ! git config --global --get-all safe.directory 2>/dev/null | grep -qx "$APP_DIR"; then
+  git config --global --add safe.directory "$APP_DIR"
+fi
+
 if [[ -d $APP_DIR/.git ]]; then
   say "Updating the checkout"
   git -C "$APP_DIR" pull --ff-only
