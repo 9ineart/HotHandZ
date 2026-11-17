@@ -12,7 +12,7 @@ below covers (video, written entry, deadline format, team details).
 ## P0 — nothing can be submitted without these
 
 - [x] ~~**Make this a git repository and push it.**~~ Done — pushed to
-      <https://github.com/9ineart/HotHandz>, 169 files, 10.19 MB.
+      <https://github.com/9ineart/HotHandZ>, 169 files, 10.19 MB.
 - [ ] **Confirm the repo's visibility matches the competition's rules.** Most
       require a public repo. The commit was scanned for credentials and
       personal data before pushing and came back clean, so opening it up is

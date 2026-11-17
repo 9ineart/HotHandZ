@@ -75,7 +75,7 @@ sudo apt update && sudo apt install -y caddy
 ```bash
 sudo useradd --system --home /srv/hothandz --shell /usr/sbin/nologin hothandz
 sudo mkdir -p /srv/hothandz /var/lib/hothandz
-sudo git clone https://github.com/9ineart/HotHandz.git /srv/hothandz
+sudo git clone https://github.com/9ineart/HotHandZ.git /srv/hothandz
 cd /srv/hothandz
 sudo npm ci --omit=dev
 sudo chown -R hothandz:hothandz /srv/hothandz /var/lib/hothandz
