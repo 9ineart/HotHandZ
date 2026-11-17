@@ -29,9 +29,58 @@ running continuously.
 In the Azure portal:
 
 - **Image:** Ubuntu Server 24.04 LTS
-- **Size:** B1s — this exact size is what the free allowance covers
+- **Size:** see below
 - **Authentication:** SSH public key
 - **Inbound ports:** SSH (22), HTTP (80), HTTPS (443)
+- **Azure Spot discount:** leave **off**. Spot VMs are evictable at ~30
+  seconds' notice, which would take the game down mid-judging.
+
+### Which size
+
+The 750 free hours/month cover three burstable sizes, not just one:
+
+| Size | Arch | Notes |
+| --- | --- | --- |
+| `Standard_B2ats_v2` | x64 (AMD) | 2 vCPU / 1 GiB. **Best default.** |
+| `Standard_B1s` | x64 | 1 vCPU / 1 GiB. Being retired in many regions, so it often does not appear at all. |
+| `Standard_B2pts_v2` | **ARM64** | 2 vCPU / 1 GiB. Works, but you must pick the **Arm64** Ubuntu image to match. |
+
+If no size is listed, it is a subscription-and-region restriction rather than
+anything you did — try another region, or create the VM from the portal's
+**Free services** page, which filters the list to free-eligible sizes.
+
+### Or skip the form entirely
+
+The portal's VM wizard moves its fields around between revisions. Azure Cloud
+Shell (the `>_` icon in the portal's top bar) is already signed in as you and
+needs nothing installed, and these commands do the same job deterministically:
+
+```bash
+# Which free-eligible burstable sizes does this region actually offer?
+az vm list-skus --location eastus --size Standard_B2 --output table
+
+az group create --name hothandz-rg --location eastus
+
+az vm create \
+  --resource-group hothandz-rg \
+  --name hothandz \
+  --image Ubuntu2404 \
+  --size Standard_B2ats_v2 \
+  --admin-username azureuser \
+  --generate-ssh-keys \
+  --public-ip-sku Standard
+
+az vm open-port -g hothandz-rg -n hothandz --port 80 --priority 900
+az vm open-port -g hothandz-rg -n hothandz --port 443 --priority 901
+```
+
+A Standard-SKU public IP is static by definition, so that box is ticked for
+you. Port 22 is opened by `az vm create`. `--generate-ssh-keys` makes a key
+pair in Cloud Shell if you have none; `az vm create` prints the public IP when
+it finishes.
+
+Cloud Shell asks to create a small storage account on first use, which costs a
+few pence a month.
 
 Do **not** open 8787. The room server listens on localhost; Caddy is the only
 thing that reaches it.
