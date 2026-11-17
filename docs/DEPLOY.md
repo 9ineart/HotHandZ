@@ -204,14 +204,27 @@ none of which the desktop view or the emulator can show you.
 
 ## Updating
 
+Nothing deploys automatically. A push to GitHub sits there until the VM is
+told to take it:
+
 ```bash
-cd /srv/hothandz && sudo git pull && sudo npm ci
-sudo NODE_OPTIONS=--max-old-space-size=2048 npm run build
-sudo systemctl restart hothandz-rooms
+sudo bash /srv/hothandz/deploy/update.sh
 ```
 
-Restarting drops any match in progress. Room state is in memory by design;
-there is nothing to migrate and nothing to corrupt.
+That pulls, prints which commits arrived, reinstalls only if the lockfile
+moved, rebuilds, restarts the room server and checks it came back.
+
+It is manual on purpose. The live site changes only when you decide, which is
+what you want while judges might be looking — an auto-deploy on every push can
+take the site down with a bad commit at the worst possible moment.
+
+Restarting drops any match in progress. Room state is in memory by design, so
+there is nothing to migrate and nothing to corrupt — but don't run it mid-demo.
+
+If you do want it hands-off later, the lowest-risk option is a systemd timer on
+the VM polling `git` every few minutes. That needs no deploy key, no secret in
+GitHub and no inbound access to the box — unlike a GitHub Actions workflow,
+which would need your VM's private key stored as a repository secret.
 
 The leaderboard at `/var/lib/hothandz/leaderboard.json` sits outside the
 checkout deliberately, so a redeploy cannot take it with it.
