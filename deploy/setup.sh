@@ -89,7 +89,9 @@ chown -R "$APP_USER:$APP_USER" "$APP_DIR" "$DATA_DIR"
 # --- services ---------------------------------------------------------------
 say "Installing the service and the proxy"
 cp "$APP_DIR/deploy/hothandz-rooms.service" /etc/systemd/system/
-sed "s/hothandz\.nineart\.studio/$HOSTNAME_FQDN/" "$APP_DIR/deploy/Caddyfile" >/etc/caddy/Caddyfile
+# /g so the www. variant on the same line is rewritten too, rather than left
+# pointing at the old hostname.
+sed "s/hothandz\.nineart\.studio/$HOSTNAME_FQDN/g" "$APP_DIR/deploy/Caddyfile" >/etc/caddy/Caddyfile
 
 systemctl daemon-reload
 systemctl enable --now hothandz-rooms

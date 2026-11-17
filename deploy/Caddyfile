@@ -11,7 +11,7 @@
 #   sudo caddy fmt --overwrite /etc/caddy/Caddyfile
 #   sudo systemctl reload caddy
 
-hothandz.nineart.studio {
+hothandz.nineart.studio, www.hothandz.nineart.studio {
 	# Worth having: the build is ~13 MB and a headset pulls it over Wi-Fi.
 	encode zstd gzip
 
