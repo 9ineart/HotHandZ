@@ -13,6 +13,8 @@
   "navigationDividerColorDark": "#000000",
   "backgroundColor": "#202B3B",
   "enableMicrophone": false,
+  "enableNotifications": false,
+  "splashScreenFadeOutDuration": 300,
   "enableXRScene": true,
   "startUrl": "/",
   "iconUrl": "https://hothandz.nineart.studio/icons/icon-512.png",
