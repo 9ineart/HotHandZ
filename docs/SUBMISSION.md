@@ -23,10 +23,20 @@ entry, team details, the submission form itself. Check those separately.
 
 - [x] ~~**Make this a git repository and push it.**~~ Done — pushed to
       <https://github.com/9ineart/HotHandZ>, 169 files, 10.19 MB.
-- [ ] **Confirm the repo's visibility matches the competition's rules.** Most
-      require a public repo. The commit was scanned for credentials and
-      personal data before pushing and came back clean, so opening it up is
-      safe, but check what they actually ask for.
+- [x] ~~**Confirm the repo is public.**~~ It is — `9ineart/HotHandZ`,
+      visibility `public`.
+- [ ] **Decide the music's licence before relying on the public repo.** The
+      three tracks came from a stock library and are committed to a public
+      repository. Using them *in* the game is almost certainly what the
+      licence covers; **redistributing the files themselves** is a separate
+      permission that many stock licences do not grant. Check the terms. If
+      redistribution is not allowed, the files have to come out of git
+      history, not just out of the working tree — so this is much cheaper to
+      resolve before more commits land on top. Attribution, if required,
+      belongs in the README and probably the sound panel.
+- [ ] **Submission-time details.** A description, a video, team details and
+      which URL you give are fixed when you submit; use the `www` form while
+      the bare hostname's old record is still cached by some resolvers.
 - [x] ~~**Get a domain name.**~~ Done — `hothandz.nineart.studio`.
 - [x] ~~**Create the Azure account.**~~ Done.
 - [x] ~~**Create the VM.**~~ Done — `Standard_B2ats_v2` in `swedencentral`
@@ -38,14 +48,15 @@ entry, team details, the submission form itself. Check those separately.
       `200` over HTTPS with a valid Let's Encrypt certificate, `<title>HotHandZ`,
       the JS bundle (2.5 MB), `courtyard.glb`, the UIKitML panels and the scene
       JSON all serving, and `/hca-ws` reaching the room server through Caddy.
-- [ ] **Play a full match on the deployed site**, in a browser and then on the
-      Quest. Everything above proves it is served correctly; none of it proves
-      the game plays.
-- [ ] **Play it on a real Quest.** This has never been done. Every check so far
-      has been the flat desktop view or the IWER emulator — which cannot prove
-      hand tracking, gesture recognition, passthrough, table calibration,
-      comfort, or frame rate. Budget real time here; it is the step most
-      likely to produce surprises.
+- [x] ~~**Play it on a real Quest.**~~ Done — tested on device against
+      `www.hothandz.nineart.studio`, working. This was the single biggest
+      unknown in the project: nothing before it had exercised hand tracking,
+      passthrough or table calibration on real hardware.
+
+> **The URL can be updated after submitting.** The link is live, so anything
+> deployed later reaches the judges. That splits the remaining work in two:
+> what is fixed at submission time (below) and what is not (everything else
+> in this file, which can ship afterwards).
 
 ## P1 — asked for, not built
 
@@ -101,12 +112,20 @@ rather than concluding the UI is broken.
       as `application/manifest+json`, with a generated icon set.
 - [x] ~~**Rewrite README.md.**~~ Done — rewritten while resolving the merge
       conflict against the README GitHub generated.
-- [ ] **Fix or remove `npm run test:logic`.** It runs `node --test test/` and
-      there is no `test/` directory, so it fails outright.
-- [ ] **Add a LICENSE** if the competition requires one.
-- [ ] **Check asset licensing.** `public/models/` ships `courtyard.glb`,
-      `Stage 1.glb` and the three hand models. Confirm each is cleared for
-      competition use and credit them if required.
+- [x] ~~**Fix or remove `npm run test:logic`.**~~ Removed. It pointed at a
+      `test/` directory that does not exist, so anyone who ran it got a
+      failure and learned nothing. A real suite over the pure rule functions
+      (`applyRound`, `roundPoints`, `rankOf`) would be worth having and can
+      land after the deadline.
+- [ ] **Set the repo description.** It still reads "Rock, Paper Scissors
+      tabletop for VR" — the old name, and it undersells the thing. It is the
+      first line a judge reads on GitHub.
+- [ ] **Add a LICENSE** if the competition requires one. Note it cannot be a
+      blanket MIT over the whole repository: the models and the music are
+      third-party and carry their own terms, so a code licence needs to say
+      so explicitly rather than appear to relicense them.
+- [ ] **Check model licensing.** `public/models/` ships `courtyard.glb`,
+      `Stage 1.glb` and the three hand models — same question as the music.
 
 ---
 
