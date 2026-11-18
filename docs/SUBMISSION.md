@@ -150,15 +150,44 @@ Done and verified:
 - build-tools `34.0.0` and platform `android-32` installed — the two things
   bubblewrap needs and the SDK lacked
 
-Remaining, in order:
+Done since:
 
-- [ ] `bubblewrap build` with `BUBBLEWRAP_KEYSTORE_PASSWORD` and
-      `BUBBLEWRAP_KEY_PASSWORD` set
-- [ ] `bubblewrap fingerprint add` to generate `.well-known/assetlinks.json`,
-      then deploy it — **the TWA will not launch until that file is live**
-- [ ] `adb install -r app-release-signed.apk`, launch from the Library
-- [ ] Horizon App ID and secret, accept the Developer Distribution Agreement,
-      upload with `ovr-platform-util`
+- [x] Release APK built and signed — `twa/app-release-signed.apk`, v1/v2/v3
+      schemes, `CN=HotHandZ, O=Nine Art Studio`. Verified contents:
+      `targetSdkVersion 32` (Horizon OS requires it),
+      `com.oculus.intent.category.VR` so it launches immersive rather than as
+      a 2D panel, `USE_SCENE` and `HAND_TRACKING` present.
+- [x] `.well-known/assetlinks.json` generated from the APK's own certificate
+      and deployed. Live on both hostnames as `application/json`, fingerprint
+      matching the signature.
+
+Remaining:
+
+- [ ] **Back up the keystore somewhere durable.** `~/keys/hothandz.keystore`
+      exists in exactly one place. The package id and the signing key are
+      bound permanently: lose that file and the app can never be updated,
+      only replaced by a new listing under a new package name. This is the
+      highest-consequence item on this page and it takes thirty seconds.
+- [ ] **Sideload and launch it before uploading anywhere.** The APK has been
+      verified as a file, not as a running app. Nothing has yet proved the
+      auto-enter-XR path, which by design cannot run in a browser — it is
+      gated on `getDigitalGoodsService`, which only exists in an installed
+      PWA.
+- [ ] `adb install -r twa/app-release-signed.apk`, launch from the Library
+- [ ] Upload. Expect the first attempt to fail with *"must first agree to our
+      Developer Distribution Agreement"* — only an org admin can sign it, and
+      it is not a problem with the build. Use the **ALPHA** channel: a STORE
+      release goes to review and will not be live for the deadline.
+- [ ] Every later upload needs a **higher `appVersionCode`** than the last
+      (currently `3`), set in `twa/twa-manifest.json` before rebuilding.
+
+### Why this matters less than it looks
+
+A TWA wraps the live URL. The uploaded APK is a shell: every web change
+ships by redeploying the VM, and the store build picks it up on next launch.
+Only the package id, name, launcher icon, version, app mode and signing need
+a new APK. So an approved listing is not a deadline — the URL is the entry,
+and the store is a bonus that can land afterwards.
 
 Two traps worth remembering. Bubblewrap's own JDK download fetches the OpenJDK
 **source tree**, which has no `keytool`; and the command-line tools it installs
