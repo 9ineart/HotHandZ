@@ -78,6 +78,22 @@ Both need a file from you before I can do anything.
       and 9 passed with no damage to either side after a legitimate clash in
       round 6. Could be a run of draws; could be picks not landing.
 
+### Not a defect — the consent checkbox
+
+Automated clicks on it did not register on the live site, which looked like a
+hit-target bug that would strand a judge on the first screen. It is not: the
+developer clicked it by hand in the same browser and it worked.
+
+The panel is UIKit geometry in the 3D scene, not DOM, so a click has to be
+resolved by a raycast through the pointer. A real mouse moves the pointer and
+produces a tracked ray; a synthetic click at a screenshot coordinate does not
+reliably produce one that lands on a 34px box. The box and the "I agree" label
+are both bound (`ui-system.ts`), so the real hit area is wider than the square.
+
+**Generalise this: synthetic clicks are not evidence about UIKit panels.** When
+one looks unresponsive under automation, read the code or ask for a human click
+rather than concluding the UI is broken.
+
 ## P3 — submission hygiene
 
 - [x] ~~**Add a web app manifest and icons.**~~ Done and live — manifest serves
