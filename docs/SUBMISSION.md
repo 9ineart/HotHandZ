@@ -3,9 +3,19 @@
 Ordered by what blocks what. Everything in P0 is a hard blocker: the game
 cannot be played by a judge until all of it is done.
 
-I don't know this competition's own rules. Map its stated requirements onto
-this list before trusting it — there may be deliverables here that nothing
-below covers (video, written entry, deadline format, team details).
+**What the competition actually requires.** In the organisers' own deployment
+talk ([XR Bootcamp, with Felix — IWSDK tech lead at Meta — and Jimmy of Meta
+Reality Labs](https://www.youtube.com/watch?v=4ioRoWZR0AM)), Felix is explicit
+at 0:18: the only deployment requirement is *"a link that's easily accessible,
+that's public… to users and judges, and that's it"*, and any existing workflow
+is fine. Both presenters state that the PWA/APK and Horizon Store path is **not
+required** — Jimmy repeats it at 11:29 before his section.
+
+That link exists and works: <https://hothandz.nineart.studio>. So the remaining
+work is the game itself, not the plumbing.
+
+There may still be deliverables this list does not cover — a video, a written
+entry, team details, the submission form itself. Check those separately.
 
 ---
 
@@ -70,11 +80,8 @@ Both need a file from you before I can do anything.
 
 ## P3 — submission hygiene
 
-- [ ] **Add a web app manifest and icons.** There are none. `index.html` has
-      `<link rel="icon" href="data:," />`, an empty placeholder. A valid Web
-      App Manifest on a public HTTPS URL is a prerequisite for PWA install and
-      for Bubblewrap / Horizon Store packaging, so this is a blocker *if* the
-      competition wants an installable app or an APK rather than a URL.
+- [x] ~~**Add a web app manifest and icons.**~~ Done and live — manifest serves
+      as `application/manifest+json`, with a generated icon set.
 - [x] ~~**Rewrite README.md.**~~ Done — rewritten while resolving the merge
       conflict against the README GitHub generated.
 - [ ] **Fix or remove `npm run test:logic`.** It runs `node --test test/` and
@@ -83,6 +90,44 @@ Both need a file from you before I can do anything.
 - [ ] **Check asset licensing.** `public/models/` ships `courtyard.glb`,
       `Stage 1.glb` and the three hand models. Confirm each is cleared for
       competition use and credit them if required.
+
+---
+
+## Parked — Horizon Store APK
+
+Deliberately stopped, because the organisers say it is not required and the
+remaining work is in the game. Everything below already works, so picking this
+back up after the deadline is cheap. Full procedure in
+[DEPLOY.md](DEPLOY.md) and the `iwsdk-pwa-packaging` skill.
+
+Done and verified:
+
+- Manifest and icons live on the domain, correct content type
+- Auto-enter XR in `src/index.ts`, gated on `getDigitalGoodsService`, requesting
+  `immersive-ar` to match `iwsdk.config.json`
+- `twa/twa-manifest.json` — package `studio.nineart.hothandz`,
+  `isMetaQuest: true`, `horizonOSAppMode: "immersive"`, `enableXRScene: true`
+- Keystore at `~/keys/hothandz.keystore`, alias `hothandz`, outside the repo
+- Android project generates; `USE_SCENE` and `HAND_TRACKING` permissions confirmed
+  in the generated `AndroidManifest.xml`
+- JDK 17 (Temurin) and the Android SDK wired into `~/.bubblewrap/config.json`
+- build-tools `34.0.0` and platform `android-32` installed — the two things
+  bubblewrap needs and the SDK lacked
+
+Remaining, in order:
+
+- [ ] `bubblewrap build` with `BUBBLEWRAP_KEYSTORE_PASSWORD` and
+      `BUBBLEWRAP_KEY_PASSWORD` set
+- [ ] `bubblewrap fingerprint add` to generate `.well-known/assetlinks.json`,
+      then deploy it — **the TWA will not launch until that file is live**
+- [ ] `adb install -r app-release-signed.apk`, launch from the Library
+- [ ] Horizon App ID and secret, accept the Developer Distribution Agreement,
+      upload with `ovr-platform-util`
+
+Two traps worth remembering. Bubblewrap's own JDK download fetches the OpenJDK
+**source tree**, which has no `keytool`; and the command-line tools it installs
+are from 2020 and their `sdkmanager` needs `javax.xml.bind`, removed in Java 11.
+Both are worked around above — don't let it install either.
 
 ---
 
