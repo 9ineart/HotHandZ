@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "studio.nineart.hothandz",
+      "sha256_cert_fingerprints": ["73:C3:0A:18:F7:D8:70:F6:60:51:A2:7E:6B:87:E8:80:A9:D5:0F:3D:08:66:0C:F6:C6:41:12:63:B2:6C:2E:7B"]
+    }
+  }
+]
