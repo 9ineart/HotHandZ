@@ -202,17 +202,78 @@ none of which the desktop view or the emulator can show you.
 
 ---
 
-## Updating
+## Updating — the whole thing, from a browser
 
 Nothing deploys automatically. A push to GitHub sits there until the VM is
-told to take it:
+told to take it. Four steps, start to finish.
+
+**1. Make sure the work is actually on GitHub.** The VM pulls from there, not
+from your laptop. On your machine:
+
+```bash
+git status          # should say "nothing to commit, working tree clean"
+git push
+```
+
+A deploy that mysteriously changes nothing is almost always this: the commit
+never left the laptop.
+
+**2. Open a shell on the VM.** Go to <https://portal.azure.com>, click the
+**Cloud Shell** icon in the top bar (`>_`), and choose **Bash** if it asks.
+Then:
+
+```bash
+ssh azureuser@20.240.138.82
+```
+
+Say `yes` to the fingerprint prompt the first time.
+
+> **`Permission denied (publickey)`?** Cloud Shell wipes its home directory
+> from time to time, which destroys the SSH key you made there. Nothing is
+> wrong with the VM. Make a new key and hand it to the VM through the Azure
+> agent, which does not need SSH to work:
+>
+> ```bash
+> ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""
+> az vm user update --resource-group <your-rg> --name <your-vm> \
+>   --username azureuser --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
+> ```
+>
+> Then `ssh azureuser@20.240.138.82` again. `az vm list -o table` will remind
+> you of the resource group and VM names.
+
+**3. Deploy.** Now that you are on the VM:
 
 ```bash
 sudo bash /srv/hothandz/deploy/update.sh
 ```
 
-That pulls, prints which commits arrived, reinstalls only if the lockfile
-moved, rebuilds, restarts the room server and checks it came back.
+Watch what it prints. It names the commits it pulled — if that list is empty
+when you expected changes, go back to step 1. It ends with
+`==> Live at <short-sha>`; anything else is a failure and it will say so.
+
+**4. Check it from outside.** Not from the VM, and ideally not from a browser
+you have had the site open in — see the DNS-caching note under
+[Check it](#5-check-it).
+
+```bash
+curl -sI https://hothandz.nineart.studio/ | head -1
+```
+
+To prove a *specific* change shipped rather than just that the site is up,
+ask for something only the new build has. A missing path returns the SPA
+fallback — `index.html`, with a `200` — so check the content type, not the
+status:
+
+```bash
+curl -sI https://hothandz.nineart.studio/audio/music/rally.ogg | grep -i content-type
+```
+
+`audio/ogg` means the new build is live. `text/html` means you are still
+looking at the old one.
+
+That script pulls, prints which commits arrived, reinstalls only if the
+lockfile moved, rebuilds, restarts the room server and checks it came back.
 
 It is manual on purpose. The live site changes only when you decide, which is
 what you want while judges might be looking — an auto-deploy on every push can
