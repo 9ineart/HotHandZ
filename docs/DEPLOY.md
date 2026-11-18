@@ -228,21 +228,51 @@ ssh azureuser@20.240.138.82
 
 Say `yes` to the fingerprint prompt the first time.
 
-> **`Permission denied (publickey)`?** Cloud Shell wipes its home directory
-> from time to time, which destroys the SSH key you made there. Nothing is
-> wrong with the VM. Make a new key and hand it to the VM through the Azure
-> agent, which does not need SSH to work:
+**Check the prompt changed before doing anything else.** This is the single
+easiest mistake to make, and every symptom it produces is confusing:
+
+| Prompt | Where you are |
+| ------ | ------------- |
+| `nayin [ ~ ]$` | Cloud Shell — your browser sandbox. None of HotHandZ is here. |
+| `azureuser@hothandz:~$` | The VM — where the site actually runs. |
+
+Running `update.sh` in Cloud Shell fails with *"the 'no new privileges' flag
+is set, which prevents sudo from running as root"*. That message is about the
+Cloud Shell container, not about sudo, the VM, or your permissions. It means
+the SSH never connected.
+
+> **`Permission denied (publickey)`?** Cloud Shell's home directory is
+> disposable and is wiped from time to time, taking the SSH key with it.
+> Nothing is wrong with the VM.
+>
+> Hand a key to the VM through the Azure agent, which runs inside the VM and
+> so does not need SSH — this is what makes it possible to fix a box you are
+> locked out of:
 >
 > ```bash
-> ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""
-> az vm user update --resource-group <your-rg> --name <your-vm> \
->   --username azureuser --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
+> [ -f ~/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -q
+> az vm user update -g HOTHANDZ-RG -n hothandz -u azureuser \
+>   --ssh-key-value "$(cat ~/.ssh/id_ed25519.pub)"
 > ```
 >
-> Then `ssh azureuser@20.240.138.82` again. `az vm list -o table` will remind
-> you of the resource group and VM names.
+> Wait for `"provisioningState": "Succeeded"`, then `ssh` again.
+> (`az vm list -o table` re-prints the group and VM names if they change.)
 
-**3. Deploy.** Now that you are on the VM:
+**Stop it happening again.** `~/clouddrive` is backed by your storage account
+and survives the wipe that `$HOME` does not. Keep the key there once:
+
+```bash
+mkdir -p ~/clouddrive/.ssh && cp ~/.ssh/id_ed25519* ~/clouddrive/.ssh/
+```
+
+After any future wipe, restore instead of regenerating — no `az` round trip,
+and the VM already trusts this key:
+
+```bash
+mkdir -p ~/.ssh && cp ~/clouddrive/.ssh/id_ed25519* ~/.ssh/ && chmod 600 ~/.ssh/id_ed25519
+```
+
+**3. Deploy.** Only once the prompt says `azureuser@`:
 
 ```bash
 sudo bash /srv/hothandz/deploy/update.sh
