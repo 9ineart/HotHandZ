@@ -22,10 +22,12 @@ export interface AudioSettings {
   effects: number;
   /** 0..1: count-in, locks, menu feedback. */
   ui: number;
+  /** 0..1: the background tracks. Low by default -- it plays under everything. */
+  music: number;
 }
 
 export function defaultAudio(): AudioSettings {
-  return { muted: false, master: 0.8, effects: 1, ui: 1 };
+  return { muted: false, master: 0.8, effects: 1, ui: 1, music: 0.4 };
 }
 
 const clamp01 = (v: unknown): number => Math.max(0, Math.min(1, typeof v === 'number' && isFinite(v) ? v : 0));
@@ -40,6 +42,7 @@ export function loadAudio(): AudioSettings {
         master: clamp01(s.master ?? 0.8),
         effects: clamp01(s.effects ?? 1),
         ui: clamp01(s.ui ?? 1),
+        music: clamp01(s.music ?? 0.4),
       };
     }
   } catch {

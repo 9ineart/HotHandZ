@@ -128,7 +128,7 @@ export class KioskSystem extends createSystem({}) {
     this.press(this.panels.leaderboard.obj, 'lb-close', () => this.close());
     this.press(this.panels.sound.obj, 'snd-close', () => this.close());
     this.press(this.panels.sound.obj, 'snd-mute', () => this.mix((s) => ({ ...s, muted: !s.muted })));
-    for (const key of ['master', 'effects', 'ui'] as const) {
+    for (const key of ['master', 'effects', 'ui', 'music'] as const) {
       this.press(this.panels.sound.obj, `snd-${key}-down`, () => this.step(key, -VOLUME_STEP));
       this.press(this.panels.sound.obj, `snd-${key}-up`, () => this.step(key, VOLUME_STEP));
     }
@@ -215,7 +215,7 @@ export class KioskSystem extends createSystem({}) {
 
   // ------------------------------------------------------------------ sound
 
-  private step(key: 'master' | 'effects' | 'ui', by: number): void {
+  private step(key: 'master' | 'effects' | 'ui' | 'music', by: number): void {
     this.mix((s) => ({ ...s, [key]: Math.max(0, Math.min(1, Math.round((s[key] + by) * 10) / 10)) }));
     // The blip plays on the bus being set, so a level can be heard while it is
     // being chosen rather than discovered in the next match. The press itself
@@ -235,7 +235,7 @@ export class KioskSystem extends createSystem({}) {
     const s = getAudioMix();
     this.set(p, 'snd-mute-text', { text: s.muted ? 'OFF' : 'ON' });
     this.set(p, 'snd-mute-switch', { backgroundColor: s.muted ? GREY : MINT });
-    for (const key of ['master', 'effects', 'ui'] as const) {
+    for (const key of ['master', 'effects', 'ui', 'music'] as const) {
       this.set(p, `snd-${key}-value`, { text: volumeLabel(s[key]) });
       this.set(p, `snd-${key}-fill`, {
         width: Math.max(1, Math.round(SND_TRACK * s[key])),

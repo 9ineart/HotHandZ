@@ -8,7 +8,7 @@ let ctx: AudioContext | null = null;
 let noise: AudioBuffer | null = null;
 
 /** Bus = which volume slider a sound answers to. See audio-settings.ts. */
-type Bus = 'effects' | 'ui';
+type Bus = 'effects' | 'ui' | 'music';
 let master: GainNode | null = null;
 const buses: Partial<Record<Bus, GainNode>> = {};
 let mix: AudioSettings = loadAudio();
@@ -47,6 +47,22 @@ function applyMix(): void {
   if (master) master.gain.value = mix.muted ? 0 : mix.master;
   if (buses.effects) buses.effects.gain.value = mix.effects;
   if (buses.ui) buses.ui.gain.value = mix.ui;
+  if (buses.music) buses.music.gain.value = mix.music;
+}
+
+/**
+ * The shared AudioContext, or null where WebAudio is unavailable.
+ *
+ * Exposed for the music player, which feeds a streaming `<audio>` element
+ * through the same graph so one master level and one mute govern everything.
+ */
+export function audioContext(): AudioContext | null {
+  return ac();
+}
+
+/** The gain node for a bus, so another source can join the same mix. */
+export function audioBus(bus: Bus): AudioNode | null {
+  return ac() ? out(bus) : null;
 }
 
 /** Called by the sound panel whenever the player moves a control. */

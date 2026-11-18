@@ -82,5 +82,17 @@
         <div id="snd-ui-up" class="step"><Plus class="step-icon"></Plus></div>
       </div>
     </div>
+    <div class="row">
+      <div class="texts">
+        <div class="name">Music</div>
+        <div class="hint">Background tracks</div>
+      </div>
+      <div class="bar"><div id="snd-music-fill" class="bar-fill"></div></div>
+      <div class="controls">
+        <div id="snd-music-down" class="step"><Minus class="step-icon"></Minus></div>
+        <div id="snd-music-value" class="value">40%</div>
+        <div id="snd-music-up" class="step"><Plus class="step-icon"></Plus></div>
+      </div>
+    </div>
   </div>
 </div>

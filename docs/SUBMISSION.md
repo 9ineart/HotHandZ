@@ -51,25 +51,26 @@ entry, team details, the submission form itself. Check those separately.
 
 Both need a file from you before I can do anything.
 
-- [ ] **Background music, 2–3 tracks.** There is no audio pipeline at all:
-      `sfx.ts` synthesises every sound from oscillators and the project
-      contains no audio files. Supply licensed tracks and the music bus,
-      looping, state-based switching and a volume row in the sound panel can
-      be built around them.
+- [x] ~~**Background music, 2–3 tracks.**~~ Done — three tracks, shuffled,
+      starting once the battlefield is placed. They ride a `music` bus in the
+      existing WebAudio graph, so the master level and the mute switch govern
+      them, and the sound panel has its own Music row (40% by default). The
+      supplied 134 MB of 24-bit WAV was transcoded to loudness-matched Ogg
+      Vorbis — 6.1 MB for all three, build 12.6 → 18.7 MB.
 - [ ] **HotHandZ logo in the centre of the field.** No logo or brand asset
       exists in the repo. A PNG or SVG can be placed as a texture on the arena
       floor. Without one the best available is a wordmark built from text.
 
 ## P2 — known defects
 
-- [ ] **Name field keeps its old value after you tap it.** The box renders
-      empty but the stored name is still there, so typing appends: renaming
-      from "test" to "Nayin" produced **"testNayin"**. Confirmed in the running
-      app.
-- [ ] **Name field loses focus silently.** After a short burst of typing,
-      further keystrokes and backspace did nothing; a snapshot confirmed focus
-      had dropped with no visual cue. Both of these were found with a desktop
-      keyboard — check the XR virtual-keyboard path too, it may differ.
+- [x] ~~**Name field defects.**~~ Fixed and verified in the running app. The
+      field was controlled, writing its value back on every keystroke, which
+      rebuilt the component's whole reactive property set mid-typing; it is
+      now uncontrolled. The apparent "appending" was the remembered name with
+      a caret after it, so the first focus now selects that text and the first
+      keystroke replaces it. `readName` also read a property that does not
+      exist, silently skipping the trim and the 16-char cap on every call.
+      Still worth checking the XR virtual-keyboard path on device.
 - [ ] **Verify the hand menu during calibration.** The gate was changed so the
       menu is available before the battlefield is placed, but it is XR-only by
       design and has not been seen working. Needs a headset or an emulated

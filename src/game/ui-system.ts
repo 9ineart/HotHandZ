@@ -13,6 +13,7 @@ import { getGame } from './context.js';
 import type { GameContext } from './context.js';
 import { BEAT_VERB, COUNTDOWN_BEATS, FIGHTER, HERO_FOR_GESTURE, HERO_LABEL } from './protocol.js';
 import type { Gesture } from './protocol.js';
+import { music } from './music.js';
 import { rankOf, streakTitle } from './profile.js';
 import { sfx } from './sfx.js';
 
@@ -203,6 +204,11 @@ export class UiSystem extends createSystem({}) {
       }),
       this.ctx.events.on('state', () => (this.joining = false)),
       this.world.visibilityState.subscribe((vis) => {
+        // Headset off, or the session pushed behind a system menu: hold the
+        // music rather than play to an empty room. `pause` keeps the position,
+        // so putting the headset back on resumes the same track.
+        if (vis === VisibilityState.VisibleBlurred) music.pause();
+        else if (this.stage !== 'name' && this.stage !== 'consent' && this.stage !== 'ended') music.start();
         // Deliberately does not clear `placedFor`: a blur and focus round trip
         // would otherwise re-anchor parked panels to wherever the player has
         // since moved. Entering or leaving AR changes the placement key anyway.
@@ -485,6 +491,11 @@ export class UiSystem extends createSystem({}) {
    */
   private startReady(): void {
     this.stage = 'ready';
+    // Onboarding is behind us and the battlefield is down: from here on the
+    // player is in the game, so the background tracks come up. Starting
+    // earlier would play music under the consent and calibration copy, which
+    // are the two screens that most need to be read rather than felt.
+    music.start();
     this.searchSent = false;
     this.aiFallback = false;
     this.joining = false;
@@ -513,6 +524,9 @@ export class UiSystem extends createSystem({}) {
     this.joining = false;
     this.stage = 'ended';
     this.placedFor = '';
+    // Left the game deliberately: drop the track as well, so coming back in
+    // starts fresh rather than halfway through whatever was playing.
+    music.stop();
     if (this.immersive()) this.world.exitXR();
   }
 
