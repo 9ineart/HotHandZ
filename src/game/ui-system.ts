@@ -17,7 +17,6 @@ import { rankOf, streakTitle } from './profile.js';
 import { sfx } from './sfx.js';
 
 type El = UIKit.Component;
-type InputEl = El & { input?: { currentSignal?: { peek(): string } } };
 
 /**
  * "Champion Arcade" HUD moods. The header itself stays navy; each phase tints
@@ -95,6 +94,8 @@ export class UiSystem extends createSystem({}) {
 
   private stage: Stage = 'name';
   private name = '';
+  /** Has the player edited the name field themselves? Drives select-on-focus. */
+  private nameTouched = false;
   private agreed = false;
   private desktop = false;
   private tutorialSeen = false;
@@ -145,6 +146,7 @@ export class UiSystem extends createSystem({}) {
     } catch {
       /* storage unavailable: start fresh */
     }
+    this.bindNameField();
     this.setNameField(this.name);
 
     this.press('primary-btn', () => this.onPrimary());
@@ -269,19 +271,94 @@ export class UiSystem extends createSystem({}) {
     sfx.hover();
   }
 
-  /** Controlled input: every keystroke is written back, capped at 16 chars. */
-  private setNameField(value: string): void {
+  /**
+   * Wire the name field once. Called from `init`, never again.
+   *
+   * The field is deliberately left **uncontrolled**. uikit resolves an Input's
+   * text as `value ?? uncontrolledSignal ?? defaultValue ?? ''`, so setting
+   * `value` pins the display to whatever we last wrote — which means the only
+   * way to make typing visible is to write the value back on every keystroke.
+   * That is what the old code did, and it is why typing here misbehaved:
+   * `setProperties` rebuilds the component's whole reactive property set
+   * (it spreads over the old input properties and calls `resetProperties`),
+   * and the effect that mirrors the text into the hidden DOM input then
+   * reassigns `element.value` mid-keystroke, moving the caret.
+   *
+   * Leaving `value` unset lets the browser's own text editing run untouched.
+   * We only listen.
+   */
+  private bindNameField(): void {
     this.el['name-input'].setProperties({
-      value,
       onValueChange: (v: string) => {
-        this.name = v.slice(0, 16);
-        this.setNameField(this.name);
+        this.name = v;
+        this.nameTouched = true;
+      },
+      // A returning player arrives with their old name already in the box. Left
+      // alone, a tap and a type appends rather than replaces -- "test" plus
+      // "Nayin" really did produce "testNayin", which looked like a bug and is
+      // just a caret sitting after the remembered text. Selecting that text on
+      // the first focus makes the first keystroke replace it, while a later
+      // click still drops a caret for editing.
+      onFocusChange: (focused: boolean) => {
+        if (!focused) return;
+        this.nameDom ??= document.activeElement as HTMLInputElement | null;
+        if (this.nameTouched) return;
+        const dom = this.nameDom;
+        if (dom?.value) dom.setSelectionRange(0, dom.value.length);
       },
     } as never);
   }
 
+  /**
+   * uikit's own `<input>` for the name field, or null before it is found.
+   *
+   * uikit backs every Input with a real offscreen `<input>` appended to
+   * `document.body`, and that element -- not the UIKitML wrapper -- is where
+   * the text, the caret and the selection actually live. The wrapper that
+   * `requireElementById` returns forwards `setProperties` but exposes none of
+   * uikit's own `currentSignal` / `focus` / `uncontrolledSignal`, so caret and
+   * selection work has to address the DOM node. It is captured on first focus
+   * and otherwise looked up lazily; this panel holds the app's only Input.
+   */
+  private nameDom: HTMLInputElement | null = null;
+
+  private nameInput(): HTMLInputElement | null {
+    this.nameDom ??= document.querySelector<HTMLInputElement>('body > input[type="text"]');
+    return this.nameDom;
+  }
+
+  /**
+   * Put a value in the name field from code (the remembered name, or a shuffle).
+   *
+   * `defaultValue` covers the field until the player types; after that only
+   * `uncontrolledSignal` can override them, so both are written. Neither fires
+   * `onValueChange`, hence the explicit `this.name`.
+   */
+  private setNameField(value: string): void {
+    this.name = value;
+    // `defaultValue` covers the field until the player types. Once they have,
+    // uikit prefers its own stored text, and the only way to override that
+    // without pinning the field to a controlled `value` is to write the DOM
+    // node and let uikit's own input handler pick the change up.
+    this.el['name-input'].setProperties({ defaultValue: value } as never);
+    const dom = this.nameInput();
+    if (dom && dom.value !== value) {
+      dom.value = value;
+      dom.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    // A shuffled name is ours, not theirs: let the next focus select it too.
+    this.nameTouched = false;
+  }
+
+  /**
+   * The field's live text, falling back to the mirror.
+   *
+   * The 16-char cap lives here rather than on each keystroke: clamping as the
+   * player types would mean writing the field back, which is the thing this
+   * pair of methods exists to avoid.
+   */
   private readName(): string {
-    const typed = (this.el['name-input'] as InputEl).input?.currentSignal?.peek();
+    const typed = this.nameInput()?.value;
     return (typed ?? this.name).trim().slice(0, 16);
   }
 
@@ -292,7 +369,9 @@ export class UiSystem extends createSystem({}) {
   }
 
   private commitName(): void {
-    this.name = this.readName() || this.name || this.randomName();
+    // Written back so the field shows exactly what was saved: `readName`
+    // trims and caps, and the player should see that, not their raw typing.
+    this.setNameField(this.readName() || this.name || this.randomName());
     try {
       localStorage.setItem(NAME_KEY, this.name);
     } catch {
@@ -345,8 +424,7 @@ export class UiSystem extends createSystem({}) {
   private onSecondary(): void {
     switch (this.stage) {
       case 'name': {
-        this.name = this.randomName();
-        this.setNameField(this.name);
+        this.setNameField(this.randomName());
         break;
       }
       case 'consent':
